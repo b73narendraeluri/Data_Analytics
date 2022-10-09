@@ -1,0 +1,504 @@
+create database project_emp;
+create table employees
+(
+emp_id int,
+emp_name varchar(25),
+job_name varchar(10),
+manager_id int,
+hire_date date,
+salary decimal(10,2),
+commission decimal(7,2),
+dep_id int
+);
+select * from employees;
+
+use project_emp;
+Insert into employees (emp_id,emp_name,job_name,manager_id,hire_date,salary,commission, dep_id) values 
+(68319 , 'KAYLING' , 'PRESIDENT' ,NULL, '1991-11-18',6000.00,NULL,1001 );
+Insert into employees values
+(66928,'BLAZE', 'MANAGER',68319,'1991-05-01',2750.00,NULL,3001),
+(67832, 'CLARE','MANAGER',68319,'1991-06-09',2550.00,NULL,1001),
+(65646, 'JONAS','MANAGER',68319,'1991-04-02',2957.00,NULL,2001),
+(67858, 'SCARLET','ANALYST',65646,'1997-04-19',3100.00,NULL,2001),
+(69062,'FRANK','ANALYST',65646,'1991-12-03',3100.00,NULL,2001),
+(63679,'SANDRINE','CLERK',69062,'1990-12-18',900.00,NULL,2001),
+(64989,'ADELYN','SALESMAN',66928,'1991-02-20',1700.00,400.00,3001),
+(65271,'WADE','SALESMAN',66928,'1991-02-22',1350.00,600.00,3001),
+(66564,'MADDEN','SALESMAN',66928,'1991-09-28',1350.00,1500.00,3001),
+(68454,'TUCKER','SALESMAN',66928,'1991-09-08',1600.00,0.00,3001),
+(68736,'ADNRES','CLERK',67858,'1997-05-23',1200.00,NULL,2001),
+(69000,'JULIUS','CLERK',66928,'1991-12-03',1050.00,NULL,3001),
+(69324,'MARKER','CLERK',67832,'1992-01-23',1400.00,NULL,1001);
+
+
+select * from project_emp..employees;
+--Q:1
+select * from employees;
+--Q:2
+select salary from employees;
+--Q:3
+select distinct(job_name) from employees;
+--Q:4
+select emp_name,salary*1.15 as salary from employees;
+--Q:5
+select concat(emp_name,space(4),job_name) as 'Employee & Job' from employees;
+--Q:6
+select emp_name+space(1)+'('+lower(job_name)+')' as Employee from employees;
+
+create table department
+(
+dep_id int,
+dep_name varchar(20),
+dep_location varchar(15)
+);
+select * from department;
+insert into department values(1001,'FINANCE','SYDNEY'),(2001,'AUDIT','MELBOURNE'),(3001,'MARKETING','PERTH'),(4001,'PRODUCTION','BRISBANE');
+
+create table salary_grade
+(
+grade int,
+min_salary int,
+max_salary int
+);
+
+select * from salary_grade;
+insert into salary_grade values(1,800,1300),(2,1301,1500),(3,1501,2100),(4,2101,3100),(5,3101,9999);
+select * from employees;
+select * from department;
+select * from salary_grade;
+--Q:7 
+select emp_id,emp_name,salary,CONVERT(varchar(50),hire_date,109) as to_char from employees; 
+
+--Q:53 
+select e.emp_name,e.job_name,e.salary*12 as Annual_salary, e.dep_id,d.dep_name,s.grade from employees e, department d, salary_grade s WHERE e.dep_id=d.dep_id and ( (e.salary*12)>60000 or (e.job_name <> 'ANALYST')) order by e.job_name;
+
+select * from project_emp.INFORMATION_SCHEMA.TABLES;
+
+--Q8
+select emp_name,len(emp_name) as name_length from employees;
+
+--Q9
+select emp_id,salary,commission from employees;
+
+--Q10 check
+select distinct(dep_id),job_name from employees order by dep_id;
+
+--Q11
+select * from employees where dep_id not in(2001);
+
+--Q12
+select * from employees where year(hire_date)<1991;
+
+--Q13
+select avg(salary) from employees where job_name='analyst';
+
+--Q14
+select * from employees where emp_name='blaze';
+
+--Q15
+select * from employees where commission>salary;
+
+--Q16
+select * from employees where (salary*1.25)>3000;
+
+--Q17
+select emp_name from employees where len(emp_name)=6;
+
+--Q18
+select * from employees where month(hire_date)=01;
+
+--Q19
+select e.emp_name+space(4)+'works for',m.emp_name from employees e, employees m where e.manager_id=m.emp_id;
+
+--Q20
+select * from employees where job_name='clerk';
+
+--Q21
+select * from employees where year(hire_date)<1995;
+select *  from employees where year(getdate())-year(hire_date)>27;
+select year(getdate());
+
+--Q22
+select * from employees where salary<3500;
+
+--Q23
+select emp_name, job_name, salary from employees where job_name='analyst';
+
+--Q24
+select * from employees where year(hire_date)=1991;
+
+--Q25
+select emp_id,emp_name,hire_date,salary from employees where hire_date<'1991-04-01';
+
+--Q26
+select emp_name,job_name from employees where manager_id IS NULL;
+
+--Q27
+select * from employees where hire_date='1991-05-01';
+
+--Q28 NOT COMPLETED  Experience in yyyy-mm-dd
+select emp_id,emp_name,salary,yearCURRENT_DATE, hire_date) as experience from employees  where manager_id=68319;
+
+--Q29 NOT COMPLETED  Experience in yyyy-mm-dd
+select emp_id,emp_name, salary from employees where (salary/30)>100;
+select DATEDIFF(year,hire_date,GetDate()) from employees;
+
+--Q30
+select emp_name from employees where DATEADD(month,96,hire_date) >= '1999-12-31' order by emp_name;
+
+--Q31
+select * from employees where (salary % 2)<>0;
+
+--GETDATE() FUNCTION
+select emp_name,GETDATE() from employees;
+
+--DATEDIFF() FUNCTION
+--DATEDIFF(DatePart,StarDate, Enddate);
+select emp_name, DATEDIFF(YEAR,hire_date,GETDATE()) as experience_in_years from employees;
+select emp_name, DATEDIFF(MONTH,hire_date,GETDATE()) as experience_in_months from employees;
+select emp_name, DATEDIFF(WEEK,hire_date,GETDATE()) as experience_in_weeks from employees;
+select emp_name, DATEDIFF(DAY,hire_date,GETDATE()) as experience_in_days from employees;
+
+--DATEADD() FUNCTION
+--DATEADD(DatePart,NUMBER, DATE);
+select emp_name,hire_date, DATEADD(YEAR,5,hire_date) as 'After 5 years' from employees;
+select emp_name,hire_date, DATEADD(MONTH,5,hire_date) as 'After 5 months' from employees;
+select emp_name,hire_date, DATEADD(WEEK,5,hire_date) as 'After 5 weeks' from employees;
+select emp_name,hire_date, DATEADD(DAY,5,hire_date) as 'After 5 days' from employees;
+
+--INTERVAL Function
+
+
+
+--Q32 whose salary is a 3-digit number(3+dot+2 decimal points)
+select  *  from employees where len(salary)=6;
+
+--Q33 
+select * from employees where month(hire_date)=04;
+
+--Q34
+--select * from employees where to_char(hire_date,'DD')<19;
+
+--Q35
+select * from employees where  JOB_NAME='SALESMAN' AND DATEDIFF(MONTH,hire_date,GETDATE())>10;
+
+--Q36
+select * from employees where dep_id in(3001,1001) and YEAR(hire_date)=1991;
+
+--Q37
+select * from employees where dep_id in(1001,2001);
+
+--Q38
+select * from employees where job_name='clerk' and dep_id=2001;
+
+--Q39
+select emp_id,emp_name,salary,commission,job_name from employees where job_name='salesman' and dep_id=3001 and (12*salary+commission)<34000 and commission<salary;
+
+--Q40
+select * from employees where job_name='clerk' or job_name='manager';
+
+--Q41
+select * from employees where month(hire_date)<>02;
+
+--Q42
+select * from employees where year(hire_date)=1991;
+
+--Q43
+select * from employees where year(hire_date)=1991 and month(hire_date)=06;
+
+--Q44
+select * from employees where (12*salary)>=24000 and (12*salary)<=50000;
+
+--Q45
+select * from employees where hire_date in('1991-05-01','1991-02-20','1991-12-03')
+
+--Q46
+select * from employees where manager_id in(63679,68319,66564,69000);
+
+--Q47
+select * from employees where year(hire_date)=1991 and month(hire_date) between 7 and 12;
+
+--Q48
+select * from employees where year(hire_date) between 1990 and 1999;
+
+--Q49
+select * from employees where job_name='manager' and dep_id in(1001,2001);
+
+--Q50
+select * from employees where month(hire_date)=02 and salary between 1001 and 2000;
+
+--Q51
+select * from employees where year(hire_date)<>1991;
+
+--Q52
+select e.emp_id,e.emp_name,e.job_name,e.manager_id,e.hire_date,e.salary,e.commission,e.dep_id,d.dep_name from employees e LEFT JOIN department d ON e.dep_id=d.dep_id;
+
+--Q53   THREE TABLES 
+select e.emp_name,e.job_name,(12*e.salary) as 'Annual salary',d.dep_name,e.dep_id,s.grade 
+from employees e,department d, salary_grade s  
+where e.dep_id=d.dep_id and 
+((12*e.salary)>=60000 or e.job_name not in ('analyst'))
+and e.salary between s.min_salary and s.max_salary ; 
+
+--Q54
+select e.emp_name,e.job_name,e.manager_id,m.emp_name as manager_name,m.salary as manager_salary 
+from employees e,employees m where e.manager_id=m.emp_id 
+and e.salary>m.salary;
+
+--Q55
+select e.emp_name,e.dep_id,e.salary,e.commission,d.dep_location from employees e,department d 
+where  e.salary between 2000 and 5000 
+and d.dep_location='perth' and e.dep_id=3001;
+
+--Q56
+select s.grade,e.emp_name from employees e,salary_grade s 
+where e.dep_id in (1001,3001) 
+and s.grade not in(4)
+and e.hire_date<'1992-12-31'
+and e.salary between s.min_salary and s.max_salary;
+
+--Q57
+select e.emp_id,e.emp_name,e.job_name,e.manager_id,e.hire_date,e.salary,e.dep_id, m.emp_name as emp_name 
+from employees e, employees m
+where e.manager_id=m.emp_id 
+and m.emp_name='jonas';
+
+--Q58
+select e.emp_name,e.salary from employees e,salary_grade s
+where s.grade between 1 and 5
+and e.salary=s.max_salary
+and e.emp_name='frank';
+
+--Q59
+select * from employees  
+where job_name in ('manager','analyst') 
+and salary between 2000 and 5000
+and commission IS NULL;
+
+--Q60
+select e.emp_id,e.emp_name,e.dep_id,e.salary,e.hire_date,d.dep_location from employees e,department d
+where d.dep_location in('perth','melbourne')
+and DATEDIFF(year,hire_date,getdate())>10
+and e.dep_id=d.dep_id;
+
+--Q61
+select e.emp_id,e.emp_name,e.dep_id,e.salary,d.dep_location  from employees e,department d
+where e.dep_id=d.dep_id 
+and d.dep_location in ('sydney','melbourne')
+and e.salary between 2000 and 5000 
+and year(hire_date)=1991;
+
+--Q62
+select e.dep_id,e.emp_id,e.emp_name,e.salary,d.dep_name,d.dep_location,s.grade  from employees e, department d,salary_grade s
+where e.dep_id=d.dep_id
+
+and (d.dep_name='marketing'and d.dep_location in ('melbourne','perth'))
+
+and s.grade between 3 and 5
+and DATEDIFF(YEAR,hire_date,GETDATE())>25
+and e.salary between s.min_salary and s.max_salary;
+
+
+--Q63
+select e.*,m.hire_date from employees e, employees m 
+where e.manager_id=m.emp_id
+and e.hire_date<m.hire_date;
+
+--Q64
+select e.*,s.* from employees e,salary_grade s
+where (s.grade in (4) and e.salary between s.min_salary and s.max_salary);
+
+--Q65
+select e.emp_name  from employees e, department d
+where e.dep_id=d.dep_id 
+and e.emp_name not in('marker','adelyn') 
+and d.dep_name in('production','audit')
+and year(hire_date)>1991
+order by e.emp_name;
+
+--Q66
+ select * from employees order by salary asc;
+
+ --Q67
+ select * from employees order by dep_id asc, job_name desc; 
+
+ --Q68
+ select distinct(job_name) from employees order by job_name desc;
+
+ --Q69
+ select emp_id,emp_name,salary as monthly_salary,salary/30 as daily_salary,12*salary as Annual_salary from employees
+ order by Annual_salary asc;
+
+ --Q70
+ select * from employees 
+ where job_name in('clerk','analyst')
+ order by job_name desc;
+
+ --Q71
+ select d.dep_location  from employees e, department d
+ where e.dep_id=d.dep_id
+ and e.emp_name='clare';
+
+ --Q72
+ select * from employees
+ where hire_date in ('1991-05-01','1991-12-03','1990-01-19') order by hire_date asc;
+
+ --Q73
+ select * from employees where salary<1000 order by salary;
+
+ --Q74
+ select * from employees order by salary asc;
+
+ --Q75
+ select * from employees order by job_name asc,emp_id desc;
+
+ --Q76
+ select distinct(job_name) from employees where dep_id in(2001,3001) order by job_name desc;
+
+ --Q77
+ select * from employees where job_name not in('president','manager') order by salary asc;
+
+ --Q78
+ select * from employees where (12*salary)<25000 order by salary asc;
+
+ --Q79
+ select emp_id,emp_name,(12*salary) as Annual_salary,(salary/30) as daily_salary  from employees 
+ where job_name='salesman' order by Annual_salary asc;
+
+ --Q80
+ select emp_id,emp_name,hire_date,GETDATE() as to_date,DATEDIFF(YEAR,hire_date,GETDATE()) as exp from employees order by exp asc;
+
+ --Age calculation? 
+ --select  DATEDIFF(YEAR,hire_date,GETDATE()), DATEDIFF(MONTH,hire_date,GETDATE()), DATEDIFF(DAY,hire_date,GETDATE()) from employees;
+
+ --Q81
+ select * from employees 
+ where hire_date>'1991-07-01' 
+ and year(hire_date)=1991 order by job_name asc;
+
+ --Q82
+ select *  from employees e,department d 
+ where e.dep_id=d.dep_id 
+ and d.dep_name in('finance','audit') order by e.dep_id asc; 
+
+ --Q83
+ select * from employees e, salary_grade s 
+ where e.salary between s.min_salary and s.max_salary order by s.grade asc;
+
+ --Q84
+ select e.emp_name,e.job_name,d.dep_name,e.salary,s.grade from employees e, department d, salary_grade s 
+ where e.dep_id=d.dep_id
+ and e.salary between s.min_salary and s.max_salary
+ order by d.dep_name asc;
+
+ --Q85
+ select e.emp_name,e.job_name,e.salary,s.grade,d.dep_name from employees e,department d,salary_grade s
+ where e.salary between s.min_salary and s.max_salary
+ and e.dep_id=d.dep_id
+ and e.job_name not in ('clerk')
+ order by e.salary desc;
+
+ --Q86
+ select e.emp_id,e.emp_name,e.salary,d.dep_name,s.grade,DATEDIFF(YEAR,e.hire_date,GETDATE()) as exp,(12*e.salary) as Annual_Salary  from employees e, department d,salary_grade s
+ where e.dep_id=d.dep_id
+ and e.salary between s.min_salary and s.max_salary
+ and e.dep_id in(1001,2001);
+
+ --Q87
+ select * from employees,department;
+
+ --Q88
+ select e.* from employees e, employees m 
+ where e.manager_id=m.emp_id
+ and e.hire_date<m.hire_date;
+ 
+ --Q89
+ select e.emp_id,e.emp_name,e.salary,e.dep_id from employees e 
+ where e.dep_id in (1001) order by e.salary asc;
+
+ --Q90
+ select max(salary) as max from employees;
+
+ --Q91
+ select job_name, AVG(salary) as avg_salary,avg(salary+commission) as avg_remuneration from employees group by job_name;
+
+ --Q92
+ select job_name,sum(12*salary) as sum from employees where year(hire_date)=1991 group by job_name;
+
+ --Q93
+ select e.emp_id,e.emp_name,e.dep_id,d.dep_location from employees e, department d where e.dep_id=d.dep_id;
+ 
+ --Q 94
+ select e.emp_id,e.emp_name,e.dep_id,d.dep_location,d.dep_name from employees e, department d 
+ where e.dep_id=d.dep_id 
+ and e.dep_id in (1001,2001);
+
+ --Q95
+ select e.emp_id,e.emp_name,e.salary,s.grade from employees e,salary_grade s 
+ where e.salary between s.min_salary and s.max_salary;
+
+ --Q96
+ select e.manager_id,count(e.emp_id)  from employees e, employees m where e.manager_id=m.emp_id group by e.manager_id;
+
+ 
+ --Q97
+ select e.dep_id,e.job_name,COUNT(e.job_name) count from employees e 
+ where e.dep_id between 1001 and 3001 
+ group by job_name,dep_id;
+
+ --Q98
+ select e.dep_id,count(e.emp_id) count from employees e group by dep_id;
+
+ --Q99
+ select s.grade,count(e.emp_id),max(e.salary) from employees e, salary_grade s   
+ where e.salary between s.min_salary and s.max_salary 
+ group by grade;
+ 
+ --Q100
+ select  s.grade,count(*) from employees e, department d, salary_grade s 
+ where e.salary between s.min_salary and s.max_salary
+ and e.dep_id=d.dep_id
+ and e.job_name in('salesman') 
+ group by grade,dep_name
+ having count(*)>=2; 
+
+ --Q101   --group by and having clauses
+ select  dep_id,count(*)  from employees  group by dep_id having count(*)<4;
+
+ --Q102
+ select d.dep_name,count(*) from employees e,department d 
+ where e.dep_id=d.dep_id group by dep_name having count(*)>2;
+
+ --Q103
+ select emp_id,count(*) as count from employees group by emp_id;
+
+ --Q104
+ select dep_id,job_name,count(*) as count,avg(salary) as avg_salary from employees group by dep_id,job_name;
+
+ --Q105
+ select emp_name from employees where len(emp_name)=6 and emp_name like 'a%';
+
+ --Q106
+ select * from employees where len(emp_name)=6 and emp_name like '__r%';
+
+ --Q107
+ select * from employees where len(emp_name)=6 and emp_name like 'a%n';
+
+ --Q108
+ select * from employees where month(hire_date) in(1,3,5);
+ --select * from employees where to_char(hire_date,'month') like '_a%';  --to_char is not working
+
+ --Q109
+ select * from employees where emp_name like '%ar%';
+ 
+ --Q110
+ select * from employees where year(hire_date) between 1990 and 1999;
+
+ --Q111   trim function to be included
+ select emp_id from employees where emp_id not like '68%';
+
+ --Q112
+ select * from employees where emp_name like '%a%';
+
+ --Q113
+ select * from employees where emp_name like '%s' and len(emp_name)=6;
